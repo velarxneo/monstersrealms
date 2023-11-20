@@ -1,0 +1,452 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["extendedIndexes", "filterJson"]
+}
+
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator typegraphql {
+  provider = "typegraphql-prisma"
+}
+
+enum RealmTraitType {
+  Region
+  City
+  Harbor
+  River
+}
+
+enum OrderType {
+  Power
+  Giants
+  Titans
+  Skill
+  Perfection
+  Brilliance
+  Enlightenment
+  Protection
+  Anger
+  Rage
+  Fury
+  Vitriol
+  the_Fox
+  Detection
+  Reflection
+  the_Twins
+}
+
+// MILSTONE 1
+model Wallet {
+  id      Int             @id @default(autoincrement())
+  address String          @unique
+  realms  Realm[]         @relation()
+  sRealms SRealm[]        @relation()
+  tokens  ResourceToken[] @relation()
+}
+
+model Realm {
+  id            Int          @id @default(autoincrement())
+  realmId       Int          @unique
+  name          String?
+  wallet        Wallet?      @relation(fields: [owner], references: [address])
+  owner         String?
+  bridgedOwner  String?
+  ownerL2       String?
+  settledOwner  String?
+  wonder        String?
+  rarityRank    Int          @default(0)
+  rarityScore   Float        @default(0)
+  imageUrl      String       @default("")
+  relic         Relic?       @relation(name: "originRealm")
+  orderType     OrderType?
+  buildings     Building[]
+  resources     Resource[]
+  relicsOwned   Relic[]      @relation(name: "heldByRealm")
+  traits        RealmTrait[]
+  squad         Troop[]
+  lastAttacked  DateTime?
+  lastClaimTime DateTime?
+  lastVaultTime DateTime?
+  longitude     Float        @default(0.0)
+  latitude      Float        @default(0.0)
+
+  ownArmies Army[] @relation(name: "ownRealm")
+}
+
+model Building {
+  id                Int      @id @default(autoincrement())
+  buildingId        Int
+  realmId           Int?
+  eventId           String
+  buildingIntegrity Int
+  realm             Realm?   @relation(fields: [realmId], references: [realmId])
+  builds            String[]
+
+  @@unique([realmId, buildingId])
+}
+
+model Food {
+  id         Int      @id @default(autoincrement())
+  realmId    Int
+  buildingId Int
+  eventId    String
+  qty        Int      @default(0)
+  harvests   Int      @default(0)
+  createdAt  DateTime
+  updatedAt  DateTime
+
+  @@unique([realmId, buildingId])
+}
+
+model Relic {
+  realmId     Int
+  originRealm Realm? @relation(name: "originRealm", fields: [realmId], references: [realmId])
+  heldByRealm Int
+  realmHolder Realm? @relation(name: "heldByRealm", fields: [heldByRealm], references: [realmId])
+
+  @@unique([realmId])
+}
+
+model BuildingRealmTraitConstraint {
+  buildingId Int
+  traitType  RealmTraitType
+  max        Int            @default(5)
+
+  @@unique([buildingId])
+}
+
+// MILSTONE 1
+model Resource {
+  id         Int      @id @default(autoincrement())
+  resourceId Int
+  realmId    Int?
+  realm      Realm?   @relation(fields: [realmId], references: [realmId])
+  level      Int      @default(0)
+  upgrades   String[]
+
+  @@unique([resourceId, realmId])
+}
+
+model ResourceToken {
+  id         Int    @id @default(autoincrement())
+  resourceId Int
+  qty        Int
+  address    String
+  wallet     Wallet @relation(fields: [address], references: [address])
+}
+
+model RealmTrait {
+  type    RealmTraitType
+  qty     Int
+  realmId Int
+  realm   Realm?         @relation(fields: [realmId], references: [realmId])
+
+  @@unique([type, realmId])
+}
+
+// MILSTONE 1
+model SRealm {
+  id      Int     @id @default(autoincrement())
+  realmId Int     @unique
+  wallet  Wallet? @relation(fields: [owner], references: [address])
+  owner   String?
+}
+
+model Troop {
+  realmId   Int
+  troopId   Int
+  index     Int
+  type      Int       @default(0)
+  tier      Int       @default(0)
+  building  Int       @default(0)
+  agility   Int       @default(0)
+  attack    Int       @default(0)
+  armor     Int       @default(0)
+  vitality  Int       @default(0)
+  wisdom    Int       @default(0)
+  squadSlot Int
+  timestamp DateTime?
+
+  Realm Realm @relation(fields: [realmId], references: [realmId])
+
+  @@unique([realmId, index, squadSlot])
+}
+
+model Desiege {
+  id              Int       @id @default(autoincrement())
+  gameId          Int       @unique
+  winner          Int?
+  attackedTokens  Int?
+  defendedTokens  Int?
+  damageInflicted Int?      @default(0)
+  eventIndexed    String?
+  initialHealth   Int?      @default(0)
+  startBlock      Int       @default(0)
+  endBlock        Int       @default(0)
+  startedOn       DateTime?
+}
+
+model DesiegeAction {
+  id            Int    @id @default(autoincrement())
+  gameId        Int
+  account       String
+  amount        Int
+  amountBoosted Int
+  tokenOffset   Int
+}
+
+model Event {
+  id                Int      @id @default(autoincrement())
+  eventId           String   @unique
+  blockNumber       Int      @default(0)
+  transactionNumber Int      @default(0)
+  chainId           String
+  contract          String
+  name              String
+  parameters        String[]
+  keys              String[]
+  timestamp         DateTime
+  txHash            String
+  status            Int      @default(0) // 0 event logged, 1 details fetched, 2 synced, -1 error
+}
+
+// LORE
+// model LastEvents {
+//   module
+// }
+model LastIndexedEvent {
+  moduleName String @id
+
+  eventId String
+}
+
+model LoreEntity {
+  id               Int     @id // from blockchain
+  owner            String?
+  ownerDisplayName String? // instead of wallet address, it will display
+  kind             Int     @default(0) // Text entity is a default
+
+  // TODO: wanted to add it but Prisma doesn't allow it... its brain explodes
+  // lastRevision    LoreEntityRevision @relation(fields: [lastRevisionId], references: [id])
+  // lastRevisionId  Int
+
+  // For Starknet indexing
+  eventIndexed String?
+
+  revisions LoreEntityRevision[]
+}
+
+model LoreEntityRevision {
+  id Int @id @default(autoincrement())
+
+  revisionNumber Int // from blockchain
+
+  // Arweave linking
+  arweaveId String
+
+  title String?
+
+  // Text kind fields
+  markdown String? // markdown body text
+  excerpt  String? // small description
+
+  // Media kind fields
+  media_url String?
+
+  createdAt DateTime? @default(now())
+
+  entity   LoreEntity @relation(fields: [entityId], references: [id])
+  entityId Int
+
+  // For Starknet indexing
+  eventIndexed String?
+
+  pois  LorePoisOnEntityRevisions[]
+  props LorePropsOnEntityRevisions[]
+}
+
+model LorePOI {
+  id        Int     @id // the same as in blockchain 1, 1000, 1001, 2000, 2001, etc.
+  name      String
+  assetType String?
+
+  entities LorePoisOnEntityRevisions[]
+}
+
+model LoreProp {
+  id   Int    @id
+  name String
+
+  entities LorePropsOnEntityRevisions[]
+}
+
+model LorePoisOnEntityRevisions {
+  id Int @id @default(autoincrement())
+
+  entityRevision   LoreEntityRevision @relation(fields: [entityRevisionId], references: [id])
+  entityRevisionId Int
+  poi              LorePOI            @relation(fields: [poiId], references: [id])
+  poiId            Int
+
+  assetId String? // uint256
+}
+
+model LorePropsOnEntityRevisions {
+  id Int @id @default(autoincrement())
+
+  entityRevision   LoreEntityRevision @relation(fields: [entityRevisionId], references: [id])
+  entityRevisionId Int // relation scalar field (used in the `@relation` attribute above)
+  prop             LoreProp           @relation(fields: [propId], references: [id])
+  propId           Int // relation scalar field (used in the `@relation` attribute above)
+
+  value String?
+}
+
+model ExchangeRate {
+  date       String
+  hour       Int
+  tokenId    Int
+  amount     String @default("")
+  buyAmount  String @default("")
+  sellAmount String @default("")
+
+  currencyReserve String @default("")
+  tokenReserve    String @default("")
+
+  // deprecated
+  lpAmount String @default("")
+
+  @@id([date, hour, tokenId])
+}
+
+model RealmHistory {
+  id              Int        @id @default(autoincrement())
+  eventId         String
+  eventType       String
+  realmId         Int
+  realmOwner      String     @default("")
+  realmName       String     @default("")
+  realmOrder      OrderType?
+  data            Json
+  timestamp       DateTime
+  transactionHash String     @default("")
+
+  @@unique([eventId, eventType])
+  @@index([realmOwner, eventId(sort: Desc)])
+  @@index([realmId, eventId(sort: Desc)])
+  @@index([eventType, eventId(sort: Desc)])
+}
+
+model CombatHistory {
+  id               Int      @id @default(autoincrement())
+  eventId          String
+  eventType        String
+  attackRealmId    Int
+  attackRealmOwner String
+  attackSquad      Json
+  defendRealmId    Int
+  defendRealmOwner String
+  defendSquad      Json
+  timestamp        DateTime
+  transactionHash  String   @default("")
+  outcome          Int      @default(0) // 0 = NON OUTCOME, 1 = COMBAT_OUTCOME_ATTACKER_WINS , 2 = COMBAT_OUTCOME_DEFENDER_WINS
+  attackType       Int      @default(0) // 0 = NON OUTCOME, 1 = COMBAT_TYPE_ATTACK_VS_DEFENSE, 2 = COMBAT_TYPE_WISDOM_VS_AGILITY
+  hitPoints        Int      @default(0)
+
+  @@unique([defendRealmId, eventId])
+  @@index([transactionHash, defendRealmId, eventId(sort: Desc)])
+}
+
+model ResourceTransfer {
+  resourceId        Int
+  eventId           String
+  blockNumber       Int      @default(0)
+  transactionNumber Int      @default(0)
+  fromAddress       String
+  toAddress         String
+  amount            String
+  amountValue       Decimal  @default(0) @db.Decimal(80, 20)
+  transactionHash   String   @default("")
+  timestamp         DateTime
+
+  @@unique([resourceId, eventId])
+  @@index([fromAddress, toAddress, eventId(sort: Desc)])
+  @@index([blockNumber, transactionNumber, eventId(sort: Desc)])
+}
+
+// Combat
+model Army {
+  realmId                Int
+  armyId                 Int
+  destinationRealmId     Int       @default(0)
+  destinationArrivalTime DateTime?
+
+  // ArmyData
+  armyPacked   Int       @default(0)
+  lastAttacked DateTime?
+  xp           Int       @default(0)
+  level        Int       @default(0)
+  callSign     Int       @default(0)
+
+  // Battalions
+  lightCavalryQty     Int @default(0)
+  lightCavalryHealth  Int @default(0)
+  heavyCavalryQty     Int @default(0)
+  heavyCavalryHealth  Int @default(0)
+  archerQty           Int @default(0)
+  archerHealth        Int @default(0)
+  longbowQty          Int @default(0)
+  longbowHealth       Int @default(0)
+  mageQty             Int @default(0)
+  mageHealth          Int @default(0)
+  arcanistQty         Int @default(0)
+  arcanistHealth      Int @default(0)
+  lightInfantryQty    Int @default(0)
+  lightInfantryHealth Int @default(0)
+  heavyInfantryQty    Int @default(0)
+  heavyInfantryHealth Int @default(0)
+
+  ownRealm Realm @relation("ownRealm", fields: [realmId], references: [realmId])
+
+  @@unique([realmId, armyId])
+}
+
+model Travel {
+  eventId                String   @id
+  contractId             Int
+  tokenId                Int
+  nestedId               Int
+  destinationContractId  Int
+  destinationTokenId     Int
+  destinationNestedId    Int
+  destinationArrivalTime DateTime
+  timestamp              DateTime
+}
+
+model Monster {
+  id            Int        @id @default(autoincrement())
+  monsterId     Int         @unique
+  realmId       Int      
+  owner         String
+  imageUrl      String
+  name          String
+  monster_class String
+  rarity        String
+  level         Int 
+  xp            Int 
+  hp            Int 
+  attack_power  Int 
+  defence_power Int 
+  eventIndexed  String?
+ 
+}

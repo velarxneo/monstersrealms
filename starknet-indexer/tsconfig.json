@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2018", // or newer if your node.js version supports this
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true,
+    "declaration": false,
+    "noFallthroughCasesInSwitch": true,
+    "composite": false,
+    "resolveJsonModule": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "lib": ["dom", "es2018", "esnext.asynciterable"],
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "strict": false,
+    "experimentalDecorators": true,
+    "outDir": "dist",
+    "rootDir": "app",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*", "app/types/*"]
+    }
+  },
+  "include": ["app/**/*", "./app/**/*.ts", "./app/**/*.tsx", "./app/**/*.json"]
+}

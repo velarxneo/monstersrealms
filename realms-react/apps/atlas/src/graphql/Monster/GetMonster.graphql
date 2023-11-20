@@ -1,0 +1,5 @@
+query getMonster($id: Float!) @api(name: starkIndexer) {
+  monster(id: $id) {
+    ...MonsterFragment
+  }
+}

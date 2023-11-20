@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-display;
+}
+
+h1 {
+  mask-image: url('https://ucarecdn.com/9514f9b1-3bf9-4b7c-b31d-9fb8cd6af8bf/');
+  mask-mode: match-source;
+  @apply text-3xl sm:text-4xl md:text-6xl font-lords;
+}
+
+h2 {
+  @apply text-2xl sm:text-3xl md:text-4xl;
+}
+
+h3 {
+  @apply text-xl sm:text-xl md:text-2xl;
+}
+
+h4 {
+  @apply text-xl font-semibold tracking-widest uppercase font-body;
+}
+
+button {
+  @apply font-body;
+}
+
+body {
+  @apply text-stone-300 font-body;
+
+  /* The second value here is a fallback. */
+  cursor: url('/arrow.png'), default;
+
+  /* You may need coordinates to adjust the pointer
+       for example, the custom cursor is circular and you want
+       the middle to be where you click */
+  cursor: url('/arrow.png') -18 -18, default;
+}
+
+#deckgl-wrapper {
+  background: rgb(146 177 185);
+  @apply overflow-auto;
+}
+
+/* Prevent interference with Bridge modal by setting z-index */
+.web3modal-modal-lightbox {
+  z-index: 51 !important;
+}
+
+.shimmer.background-animate {
+  background-size: 500%;
+}
+
+.fast {
+  animation: animation-name 3s ease infinite;
+}
+
+.slow {
+  animation: animation-name 8s ease infinite;
+}
+
+@keyframes animation-name {
+  0%,
+  100% {
+    background-position: 25% 50%;
+  }
+
+  50% {
+    background-position: 90% 50%;
+  }
+}
+@layer utilities {
+  .text-shadow {
+    text-shadow: 2px 2px 4px black;
+  }
+
+  .text-shadow-md {
+    text-shadow: 4px 4px 8px black;
+  }
+
+  .text-shadow-lg {
+    text-shadow: 15px 15px 30px black;
+  }
+
+  .text-shadow-none {
+    text-shadow: none;
+  }
+}
+
+.rc-input-number-wrap,
+.rc-input-number-input {
+  background: inherit;
+  width: 100%;
+  text-align: right;
+  font-weight: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+*::-webkit-scrollbar {
+  @apply w-1 md:w-4;
+
+  border-image: url('https://thumbs.dreamstime.com/b/closeup-old-paper-texture-age-marks-29969606.jpg')
+    12 / 3px 3px 3px 3px / 0 repeat repeat;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply cursor-move rounded-2xl hover:bg-cta-100;
+
+  border-style: solid;
+  border-image: url('https://thumbs.dreamstime.com/b/closeup-old-paper-texture-age-marks-29969606.jpg')
+    12 / 3px 3px 3px 3px / 0 repeat repeat;
+}
+
+@font-face {
+  font-family: Lords;
+  src: url('fontforlordsn.otf');
+}
+
+.card {
+  border-style: solid;
+  border-image: url('https://thumbs.dreamstime.com/b/closeup-old-paper-texture-age-marks-29969606.jpg')
+    12 / 3px 3px 3px 3px / 0 repeat repeat;
+}
+
+.paper {
+  mask-image: url('../../public/textures/grit.png');
+  mask-mode: alpha;
+}

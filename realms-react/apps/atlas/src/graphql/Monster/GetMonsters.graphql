@@ -1,0 +1,7 @@
+#import "./Monster.fragment.graphql"
+query getMonsters($take: Float, $skip: Float) @api(name: starkIndexer) {
+  monsters(filter: $filter, orderBy: $orderBy, take: $take, skip: $skip) {
+    ...MonsterFragment
+  }
+  total: monstersCount(filter: $filter)
+}

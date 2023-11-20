@@ -1,0 +1,269 @@
+[
+    {
+        "members": [
+            {
+                "name": "low",
+                "offset": 0,
+                "type": "felt"
+            },
+            {
+                "name": "high",
+                "offset": 1,
+                "type": "felt"
+            }
+        ],
+        "name": "Uint256",
+        "size": 2,
+        "type": "struct"
+    },
+    {
+        "members": [
+            {
+                "name": "LightCavalry",
+                "offset": 0,
+                "type": "Battalion"
+            },
+            {
+                "name": "HeavyCavalry",
+                "offset": 2,
+                "type": "Battalion"
+            },
+            {
+                "name": "Archer",
+                "offset": 4,
+                "type": "Battalion"
+            },
+            {
+                "name": "Longbow",
+                "offset": 6,
+                "type": "Battalion"
+            },
+            {
+                "name": "Mage",
+                "offset": 8,
+                "type": "Battalion"
+            },
+            {
+                "name": "Arcanist",
+                "offset": 10,
+                "type": "Battalion"
+            },
+            {
+                "name": "LightInfantry",
+                "offset": 12,
+                "type": "Battalion"
+            },
+            {
+                "name": "HeavyInfantry",
+                "offset": 14,
+                "type": "Battalion"
+            }
+        ],
+        "name": "Army",
+        "size": 16,
+        "type": "struct"
+    },
+    {
+        "members": [
+            {
+                "name": "Quantity",
+                "offset": 0,
+                "type": "felt"
+            },
+            {
+                "name": "Health",
+                "offset": 1,
+                "type": "felt"
+            }
+        ],
+        "name": "Battalion",
+        "size": 2,
+        "type": "struct"
+    },
+    {
+        "data": [
+            {
+                "name": "implementation",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "Upgraded",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "previousAdmin",
+                "type": "felt"
+            },
+            {
+                "name": "newAdmin",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "AdminChanged",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "attacking_monster_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "defending_army_id",
+                "type": "felt"
+            },
+            {
+                "name": "defending_realm_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "defending_army",
+                "type": "Army"
+            }
+        ],
+        "keys": [],
+        "name": "RampageStart",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "Testing",
+                "type": "Uint256"
+            }
+        ],
+        "keys": [],
+        "name": "TestEvent",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "combat_outcome",
+                "type": "felt"
+            },
+            {
+                "name": "attacking_monster_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "defending_army_id",
+                "type": "felt"
+            },
+            {
+                "name": "defending_realm_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "defending_army",
+                "type": "Army"
+            }
+        ],
+        "keys": [],
+        "name": "RampageEnd",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "monster_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "xp",
+                "type": "felt"
+            },
+            {
+                "name": "hp",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "Rampage",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "monster_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "realmId",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "Move",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address_of_controller",
+                "type": "felt"
+            },
+            {
+                "name": "proxy_admin",
+                "type": "felt"
+            }
+        ],
+        "name": "initializer",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "new_implementation",
+                "type": "felt"
+            }
+        ],
+        "name": "upgrade",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "attacking_monster_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "attacking_monster_realm_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "defending_army_id",
+                "type": "felt"
+            },
+            {
+                "name": "defending_realm_id",
+                "type": "Uint256"
+            }
+        ],
+        "name": "initiate_rampage",
+        "outputs": [
+            {
+                "name": "combat_outcome",
+                "type": "felt"
+            }
+        ],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "xoroshiro",
+                "type": "felt"
+            }
+        ],
+        "name": "set_xoroshiro",
+        "outputs": [],
+        "type": "function"
+    }
+]
